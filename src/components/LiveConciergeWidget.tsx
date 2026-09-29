@@ -90,10 +90,10 @@ export function LiveConciergeWidget({ onOpenBooking }: LiveConciergeWidgetProps)
     "https://wa.me/16462446370?text=Hello%20Febiola%20Spa%2C%20I'd%20like%20to%20inquire%20about%20a%20spa%20ritual.";
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end">
       {/* Floating Action Modal / Flyout Menu */}
       {isOpen && (
-        <div className="mb-3 w-[340px] sm:w-[380px] overflow-hidden rounded-2xl border border-gold/30 bg-card text-card-foreground shadow-2xl animate-in fade-in zoom-in-95 duration-200 backdrop-blur-md">
+        <div className="fixed inset-x-3.5 bottom-20 sm:static sm:inset-x-auto sm:mb-3 w-auto sm:w-[380px] max-w-[380px] mx-auto overflow-hidden rounded-2xl border border-gold/30 bg-card text-card-foreground shadow-2xl animate-in fade-in zoom-in-95 duration-200 backdrop-blur-md">
           {/* Header */}
           <div className="bg-[#4A3423] p-4 text-primary-foreground">
             <div className="flex items-center justify-between">
