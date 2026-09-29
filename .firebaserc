@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "spa-usa"
+  },
+  "targets": {
+    "spa-usa": {
+      "hosting": {
+        "febiola": [
+          "febiola"
+        ]
+      }
+    }
   }
 }
