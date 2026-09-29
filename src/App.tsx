@@ -209,9 +209,14 @@ function SectionTitle({
 }
 
 export default function App() {
-  const [isAdminView, setIsAdminView] = useState(() => {
-    return typeof window !== "undefined" && window.location.hash === "#admin";
-  });
+  const checkIsAdmin = () => {
+    if (typeof window === "undefined") return false;
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    return path === "/admin" || path === "/admin/" || path.startsWith("/admin/") || hash === "#admin";
+  };
+
+  const [isAdminView, setIsAdminView] = useState(() => checkIsAdmin());
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -232,11 +237,15 @@ export default function App() {
   const [inputPromo, setInputPromo] = useState("");
 
   useEffect(() => {
-    const handleHashChange = () => {
-      setIsAdminView(window.location.hash === "#admin");
+    const handleNavigation = () => {
+      setIsAdminView(checkIsAdmin());
     };
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
+    window.addEventListener("hashchange", handleNavigation);
+    window.addEventListener("popstate", handleNavigation);
+    return () => {
+      window.removeEventListener("hashchange", handleNavigation);
+      window.removeEventListener("popstate", handleNavigation);
+    };
   }, []);
 
   const handleOpenBooking = (serviceName?: string) => {
@@ -303,7 +312,11 @@ export default function App() {
     return (
       <AdminPanel
         onBackToSite={() => {
-          window.location.hash = "#home";
+          if (window.location.pathname.toLowerCase().startsWith("/admin")) {
+            window.history.pushState(null, "", "/");
+          } else {
+            window.location.hash = "#home";
+          }
           setIsAdminView(false);
         }}
       />
