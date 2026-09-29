@@ -32,24 +32,25 @@ import {
 import { LiveConciergeWidget } from "@/components/LiveConciergeWidget";
 import { AdminPanel } from "@/components/AdminPanel";
 import { TopDiscountBanner } from "@/components/TopDiscountBanner";
+import { createReservation } from "@/lib/reservationsStore";
 
-// Spa Assets
-import heroImage from "@/assets/spa-man.jpg";
-import productsImage from "@/assets/spa-products.jpg";
-import interiorImage from "@/assets/spa-interior.jpg";
-import bandImage from "@/assets/spa-band-treatment.jpg";
-import serviceTraditionalImage from "@/assets/service-traditional.jpg";
-import serviceAromatherapyImage from "@/assets/service-aromatherapy.jpg";
-import serviceLulurImage from "@/assets/service-lulur.jpg";
-import serviceFullbodyImage from "@/assets/service-fullbody.jpg";
-import serviceFacialImage from "@/assets/service-facial.jpg";
-import serviceReflexologyImage from "@/assets/service-reflexology.jpg";
-import relaxImage from "@/assets/spa-relax.jpg";
-import faqImage from "@/assets/spa-faq.jpg";
-import journal1Image from "@/assets/spa-journal-1.jpg";
-import journal2Image from "@/assets/service-aromatherapy.jpg";
-import journal3Image from "@/assets/service-facial.jpg";
-import reserveImage from "@/assets/spa-reserve.jpg";
+// Spa Assets (Ultra-Fast WebP Formats)
+import heroImage from "@/assets/spa-man.webp";
+import productsImage from "@/assets/spa-products.webp";
+import interiorImage from "@/assets/spa-interior.webp";
+import bandImage from "@/assets/spa-band-treatment.webp";
+import serviceTraditionalImage from "@/assets/service-traditional.webp";
+import serviceAromatherapyImage from "@/assets/service-aromatherapy.webp";
+import serviceLulurImage from "@/assets/service-lulur.webp";
+import serviceFullbodyImage from "@/assets/service-fullbody.webp";
+import serviceFacialImage from "@/assets/service-facial.webp";
+import serviceReflexologyImage from "@/assets/service-reflexology.webp";
+import relaxImage from "@/assets/spa-relax.webp";
+import faqImage from "@/assets/spa-faq.webp";
+import journal1Image from "@/assets/spa-journal-1.webp";
+import journal2Image from "@/assets/service-aromatherapy.webp";
+import journal3Image from "@/assets/service-facial.webp";
+import reserveImage from "@/assets/spa-reserve.webp";
 
 interface Treatment {
   name: string;
@@ -272,15 +273,14 @@ export default function App() {
   const finalPriceNum = isPromoApplied ? Math.round(basePriceNum * 0.75) : basePriceNum;
   const computedPriceStr = `$${finalPriceNum}`;
 
-  const handleBookingSubmit = (e: React.FormEvent) => {
+  const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!guestName.trim() || !guestPhone.trim()) {
       toast.error("Please provide your name and phone number.");
       return;
     }
 
-    const newRes = {
-      id: `RES-${Math.floor(1000 + Math.random() * 9000)}`,
+    await createReservation({
       guestName,
       guestPhone,
       service: selectedService,
@@ -293,20 +293,7 @@ export default function App() {
         : guestNotes,
       status: "Pending",
       price: computedPriceStr,
-      createdAt: new Date().toISOString().replace("T", " ").substring(0, 16),
-    };
-
-    try {
-      const existing = JSON.parse(
-        localStorage.getItem("febiola_spa_reservations") || "[]"
-      );
-      localStorage.setItem(
-        "febiola_spa_reservations",
-        JSON.stringify([newRes, ...existing])
-      );
-    } catch {
-      // ignore
-    }
+    });
 
     setBookingSuccess(true);
     toast.success("Reservation request sent! Our US Concierge will confirm your appointment shortly.");
@@ -405,6 +392,8 @@ export default function App() {
         <img
           src={heroImage}
           alt="A restorative treatment in the warm Febiola spa sanctuary"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-overlay/80" />
@@ -491,6 +480,7 @@ export default function App() {
                 src={interiorImage}
                 alt="The calm atmosphere inside Febiola spa"
                 loading="lazy"
+                decoding="async"
                 className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
               />
             </div>
@@ -575,6 +565,7 @@ export default function App() {
           src={bandImage}
           alt="Professional Febiola wellness treatment"
           loading="lazy"
+          decoding="async"
           className="h-full min-h-80 w-full object-cover"
         />
       </section>
@@ -599,6 +590,7 @@ export default function App() {
                     src={item.image}
                     alt={item.name}
                     loading="lazy"
+                    decoding="async"
                     style={{ objectPosition: item.pos }}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
@@ -642,6 +634,7 @@ export default function App() {
           src={relaxImage}
           alt="A peaceful massage ritual"
           loading="lazy"
+          decoding="async"
           className="h-full min-h-96 w-full object-cover"
         />
         <div className="flex min-h-72 items-center justify-center p-10 text-center">
@@ -707,6 +700,7 @@ export default function App() {
             src={productsImage}
             alt="Natural botanical ingredients used in Febiola rituals"
             loading="lazy"
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-overlay/40" />
@@ -797,6 +791,7 @@ export default function App() {
               src={faqImage}
               alt="Febiola spa preparation room"
               loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover"
             />
             <div className="absolute inset-x-5 bottom-5 rounded-lg bg-primary/95 p-6 text-primary-foreground backdrop-blur-sm">
@@ -821,6 +816,7 @@ export default function App() {
           src={productsImage}
           alt="Febiola spa products and warm candlelight"
           loading="lazy"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-overlay/85" />
@@ -876,6 +872,7 @@ export default function App() {
                   src={post.img}
                   alt={post.title}
                   loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-overlay/30 p-6 text-primary-foreground">
@@ -903,6 +900,7 @@ export default function App() {
           src={reserveImage}
           alt="Reserve a serene Febiola spa experience"
           loading="lazy"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-overlay/85" />

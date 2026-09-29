@@ -1,3 +1,12 @@
+import {
+  collection,
+  doc,
+  setDoc,
+  onSnapshot,
+  query,
+} from "firebase/firestore";
+import { db } from "./firebase";
+
 export interface ChatMessage {
   id: string;
   sender: "guest" | "admin" | "bot";
@@ -17,9 +26,10 @@ export interface ChatThread {
   unreadCount: number;
   status: "active" | "closed";
   messages: ChatMessage[];
+  updatedAt?: number;
 }
 
-const DEFAULT_THREADS: ChatThread[] = [
+export const DEFAULT_THREADS: ChatThread[] = [
   {
     id: "thread-live-visitor",
     guestName: "Online Visitor (Live)",
@@ -39,6 +49,7 @@ const DEFAULT_THREADS: ChatThread[] = [
         timeStr: "Just now",
       },
     ],
+    updatedAt: Date.now(),
   },
   {
     id: "thread-jessica",
@@ -75,6 +86,7 @@ const DEFAULT_THREADS: ChatThread[] = [
         timeStr: "02:28 PM",
       },
     ],
+    updatedAt: Date.now() - 1000 * 60 * 12,
   },
   {
     id: "thread-marcus",
@@ -111,6 +123,7 @@ const DEFAULT_THREADS: ChatThread[] = [
         timeStr: "01:55 PM",
       },
     ],
+    updatedAt: Date.now() - 1000 * 60 * 45,
   },
   {
     id: "thread-elena",
@@ -131,6 +144,7 @@ const DEFAULT_THREADS: ChatThread[] = [
         timeStr: "12:10 PM",
       },
     ],
+    updatedAt: Date.now() - 1000 * 60 * 120,
   },
 ];
 
@@ -164,6 +178,18 @@ export function saveChatThreads(threads: ChatThread[]): void {
   }
 }
 
+/**
+ * Sync single thread to Cloud Firestore
+ */
+async function syncThreadToCloud(thread: ChatThread) {
+  try {
+    const docRef = doc(db, "chat_threads", thread.id);
+    await setDoc(docRef, { ...thread, updatedAt: Date.now() });
+  } catch (err) {
+    console.warn("Firestore chat sync error:", err);
+  }
+}
+
 export function sendGuestMessage(
   threadId: string,
   text: string,
@@ -182,6 +208,7 @@ export function sendGuestMessage(
       unreadCount: 1,
       status: "active",
       messages: [],
+      updatedAt: Date.now(),
     };
     currentThreads.unshift(thread);
   }
@@ -199,6 +226,7 @@ export function sendGuestMessage(
   thread.lastMessage = text;
   thread.lastMessageTime = "Just now";
   thread.unreadCount += 1;
+  thread.updatedAt = Date.now();
 
   // Determine smart concierge answer
   let autoReplyText: string | undefined;
@@ -227,6 +255,8 @@ export function sendGuestMessage(
   }
 
   saveChatThreads(currentThreads);
+  syncThreadToCloud(thread);
+
   return { threads: currentThreads, autoReplyText };
 }
 
@@ -248,7 +278,9 @@ export function sendAdminMessage(threadId: string, text: string): ChatThread[] {
     thread.lastMessage = text;
     thread.lastMessageTime = "Just now";
     thread.unreadCount = 0; // cleared by admin viewing/replying
+    thread.updatedAt = Date.now();
     saveChatThreads(currentThreads);
+    syncThreadToCloud(thread);
   }
 
   return currentThreads;
@@ -260,12 +292,45 @@ export function markThreadAsRead(threadId: string): ChatThread[] {
   if (thread && thread.unreadCount > 0) {
     thread.unreadCount = 0;
     saveChatThreads(currentThreads);
+    syncThreadToCloud(thread);
   }
   return currentThreads;
 }
 
 export function subscribeToChat(callback: (threads: ChatThread[]) => void): () => void {
   if (typeof window === "undefined") return () => {};
+
+  callback(getChatThreads());
+
+  let unsubscribeFirestore = () => {};
+
+  try {
+    const q = query(collection(db, "chat_threads"));
+    unsubscribeFirestore = onSnapshot(
+      q,
+      (snapshot) => {
+        if (!snapshot.empty) {
+          const list: ChatThread[] = [];
+          snapshot.forEach((docSnap) => {
+            list.push(docSnap.data() as ChatThread);
+          });
+          list.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+          saveChatThreads(list);
+          callback(list);
+        } else {
+          // Seed Firestore with default threads
+          DEFAULT_THREADS.forEach((t) => {
+            syncThreadToCloud(t);
+          });
+        }
+      },
+      (err) => {
+        console.warn("Firestore chat subscription error, using local fallback:", err);
+      }
+    );
+  } catch (err) {
+    console.warn("Firestore chat init error:", err);
+  }
 
   const handleUpdate = () => {
     callback(getChatThreads());
@@ -275,6 +340,7 @@ export function subscribeToChat(callback: (threads: ChatThread[]) => void): () =
   window.addEventListener("storage", handleUpdate);
 
   return () => {
+    unsubscribeFirestore();
     window.removeEventListener("febiola_chat_update", handleUpdate as EventListener);
     window.removeEventListener("storage", handleUpdate);
   };

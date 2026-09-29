@@ -46,21 +46,16 @@ import {
   ChatThread,
   ChatMessage,
 } from "@/lib/chatStore";
+import {
+  Reservation,
+  getLocalReservations,
+  createReservation,
+  updateReservationStatus,
+  deleteReservation,
+  subscribeToReservations,
+} from "@/lib/reservationsStore";
 
-export interface Reservation {
-  id: string;
-  guestName: string;
-  guestPhone: string;
-  service: string;
-  state: string;
-  city: string;
-  date: string;
-  timeSlot: string;
-  notes?: string;
-  status: "Pending" | "Confirmed" | "Completed" | "Cancelled";
-  price: string;
-  createdAt: string;
-}
+export type { Reservation };
 
 const INITIAL_RESERVATIONS: Reservation[] = [
   {
@@ -142,22 +137,8 @@ interface AdminPanelProps {
 export function AdminPanel({ onBackToSite }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<"reservations" | "livechat">("reservations");
 
-  // Reservations State
-  const [reservations, setReservations] = useState<Reservation[]>(() => {
-    if (typeof window === "undefined") return INITIAL_RESERVATIONS;
-    try {
-      const saved = localStorage.getItem("febiola_spa_reservations");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
-      }
-    } catch {
-      // fallback
-    }
-    return INITIAL_RESERVATIONS;
-  });
+  // Reservations State connected to Cloud Firestore
+  const [reservations, setReservations] = useState<Reservation[]>(() => getLocalReservations());
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("All");
@@ -181,15 +162,19 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
   const [adminReplyText, setAdminReplyText] = useState("");
   const chatMessagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Subscribe to real-time reservations updates from Cloud Firestore
   useEffect(() => {
-    try {
-      localStorage.setItem("febiola_spa_reservations", JSON.stringify(reservations));
-    } catch {
-      // ignore
-    }
-  }, [reservations]);
+    const unsubscribe = subscribeToReservations((list) => {
+      setReservations(list);
+      if (selectedRes) {
+        const freshSelected = list.find((r) => r.id === selectedRes.id);
+        if (freshSelected) setSelectedRes(freshSelected);
+      }
+    });
+    return () => unsubscribe();
+  }, [selectedRes?.id]);
 
-  // Subscribe to real-time chat updates
+  // Subscribe to real-time chat updates from Cloud Firestore
   useEffect(() => {
     const unsubscribe = subscribeToChat((threads) => {
       setChatThreads(threads);
@@ -239,33 +224,30 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
     return matchesSearch && matchesStatus;
   });
 
-  const handleStatusChange = (id: string, newStatus: Reservation["status"]) => {
-    setReservations((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
-    );
+  const handleStatusChange = async (id: string, newStatus: Reservation["status"]) => {
+    await updateReservationStatus(id, newStatus);
     if (selectedRes && selectedRes.id === id) {
       setSelectedRes({ ...selectedRes, status: newStatus });
     }
     toast.success(`Reservation #${id} status updated to ${newStatus}`);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to remove this reservation?")) {
-      setReservations((prev) => prev.filter((r) => r.id !== id));
+      await deleteReservation(id);
       setSelectedRes(null);
       toast.success("Reservation removed successfully.");
     }
   };
 
-  const handleAddReservation = (e: React.FormEvent) => {
+  const handleAddReservation = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newGuestName.trim() || !newPhone.trim()) {
       toast.error("Please fill in guest name and phone number.");
       return;
     }
 
-    const newEntry: Reservation = {
-      id: `RES-${Math.floor(1000 + Math.random() * 9000)}`,
+    await createReservation({
       guestName: newGuestName,
       guestPhone: newPhone,
       service: newService,
@@ -276,12 +258,10 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
       price: newPrice,
       notes: newNotes,
       status: "Confirmed",
-      createdAt: new Date().toISOString().replace("T", " ").substring(0, 16),
-    };
+    });
 
-    setReservations([newEntry, ...reservations]);
     setAddModalOpen(false);
-    toast.success("New reservation recorded successfully!");
+    toast.success("New reservation recorded successfully in cloud database!");
 
     // Reset Form
     setNewGuestName("");
