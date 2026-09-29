@@ -230,102 +230,136 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
   const currentChatThread = (chatThreads || []).find((t) => t.id === selectedThreadId);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 font-body antialiased">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-neutral-950 text-neutral-100 font-body antialiased">
       {/* Top Admin Header - Responsive for All Mobile & Desktop Viewports */}
-      <header className="sticky top-0 z-40 border-b border-neutral-800 bg-neutral-900/95 backdrop-blur-md px-3 sm:px-6 py-3 sm:py-4">
+      <header className="sticky top-0 z-40 border-b border-neutral-800 bg-neutral-900/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-3.5">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-2">
           {/* Brand & Identity */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0">
-            <div className="grid size-8 sm:size-10 place-items-center rounded-full border border-gold/60 bg-[#4A3423] text-gold shadow-md">
-              <Flower2 className="size-4 sm:size-5" strokeWidth={1.4} />
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="grid size-8 sm:size-9 place-items-center rounded-full border border-gold/60 bg-[#4A3423] text-gold shadow-sm shrink-0">
+              <Flower2 className="size-4 sm:size-4.5" strokeWidth={1.4} />
             </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <h1 className="font-display text-lg sm:text-2xl font-bold tracking-wide text-neutral-100">
-                  Febiola
-                </h1>
-                <span className="hidden xs:inline-block text-[10px] font-semibold uppercase tracking-wider text-gold bg-gold/10 px-1.5 py-0.5 rounded border border-gold/30">
-                  Admin
-                </span>
-              </div>
+            <div className="flex items-center gap-1.5">
+              <span className="font-display text-lg sm:text-2xl font-bold tracking-wide text-neutral-100">
+                Febiola
+              </span>
+              <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-gold bg-gold/10 px-1.5 py-0.5 rounded border border-gold/30">
+                Admin
+              </span>
             </div>
           </div>
 
-          {/* Action Row */}
-          <div className="flex items-center gap-1.5 sm:gap-3">
-            {/* View Switcher Tabs */}
-            <div className="flex items-center rounded-xl bg-neutral-800 p-0.5 sm:p-1 border border-neutral-700/80">
-              <button
-                onClick={() => setActiveTab("reservations")}
-                className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === "reservations"
-                    ? "bg-gold text-neutral-950 shadow-md font-bold"
-                    : "text-neutral-400 hover:text-neutral-200"
-                }`}
-              >
-                <Calendar className="size-3.5 shrink-0" />
-                <span className="hidden sm:inline">Reservations</span>
-                <span className="sm:hidden">Bookings</span>
-                <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] bg-neutral-900/40 font-mono">
-                  {totalBookings}
+          {/* Desktop View Switcher Tabs (Hidden on mobile < sm) */}
+          <div className="hidden sm:flex items-center rounded-xl bg-neutral-800 p-1 border border-neutral-700/80">
+            <button
+              onClick={() => setActiveTab("reservations")}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === "reservations"
+                  ? "bg-gold text-neutral-950 shadow-md font-bold"
+                  : "text-neutral-400 hover:text-neutral-200"
+              }`}
+            >
+              <Calendar className="size-3.5 shrink-0" />
+              <span>Reservations</span>
+              <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] bg-neutral-900/40 font-mono">
+                {totalBookings}
+              </span>
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab("livechat");
+                if (selectedThreadId) markThreadAsRead(selectedThreadId);
+              }}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === "livechat"
+                  ? "bg-gold text-neutral-950 shadow-md font-bold"
+                  : "text-neutral-400 hover:text-neutral-200"
+              }`}
+            >
+              <MessageSquare className="size-3.5 shrink-0" />
+              <span>Live Chat</span>
+              {totalUnreadChats > 0 && (
+                <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500 text-white font-bold animate-pulse font-mono">
+                  {totalUnreadChats}
                 </span>
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab("livechat");
-                  if (selectedThreadId) markThreadAsRead(selectedThreadId);
-                }}
-                className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === "livechat"
-                    ? "bg-gold text-neutral-950 shadow-md font-bold"
-                    : "text-neutral-400 hover:text-neutral-200"
-                }`}
-              >
-                <MessageSquare className="size-3.5 shrink-0" />
-                <span className="hidden sm:inline">Live Chat</span>
-                <span className="sm:hidden">Chat</span>
-                {totalUnreadChats > 0 && (
-                  <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500 text-white font-bold animate-pulse font-mono">
-                    {totalUnreadChats}
-                  </span>
-                )}
-              </button>
-            </div>
+              )}
+            </button>
+          </div>
 
-            {/* Export CSV Button */}
+          {/* Right Action Row */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <Button
               variant="outline"
               size="sm"
               onClick={exportCSV}
-              title="Export Reservations CSV"
-              className="p-2 sm:px-3.5 sm:py-2 flex items-center gap-1.5 border-neutral-700 bg-neutral-800 text-neutral-200 hover:bg-neutral-700 text-xs rounded-lg h-8 sm:h-9"
+              title="Export CSV"
+              className="hidden md:flex items-center gap-1.5 border-neutral-700 bg-neutral-800 text-neutral-200 hover:bg-neutral-700 text-xs rounded-lg px-3 py-1.5 h-8"
             >
               <Download className="size-3.5 shrink-0" />
-              <span className="hidden md:inline">Export CSV</span>
+              <span>Export CSV</span>
             </Button>
 
-            {/* Add Booking Button */}
             <Button
               variant="spa"
               size="sm"
               onClick={() => setAddModalOpen(true)}
-              className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 flex items-center gap-1 text-xs rounded-lg shadow h-8 sm:h-9"
+              className="px-2.5 sm:px-3.5 py-1.5 flex items-center gap-1 text-xs rounded-lg shadow h-8 font-medium"
             >
-              <Plus className="size-3.5 sm:size-4 shrink-0" />
+              <Plus className="size-3.5 shrink-0" />
               <span className="hidden sm:inline">Add Booking</span>
-              <span className="sm:hidden font-medium">Add</span>
+              <span className="sm:hidden">Add</span>
             </Button>
 
-            {/* Back to Website Button */}
             <Button
               variant="ghost"
               size="sm"
               onClick={onBackToSite}
-              className="flex items-center gap-1 text-xs text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 rounded-lg px-2 sm:px-3 h-8 sm:h-9"
+              title="Back to Website"
+              className="flex items-center gap-1 text-xs text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 rounded-lg px-2 sm:px-3 h-8"
             >
               <LogOut className="size-3.5 shrink-0" />
               <span className="hidden sm:inline">Website</span>
             </Button>
+          </div>
+        </div>
+
+        {/* Mobile View Switcher Tabs Bar (Only on < sm phones) */}
+        <div className="flex sm:hidden items-center justify-center pt-2 mt-2 border-t border-neutral-800/80">
+          <div className="grid grid-cols-2 w-full rounded-xl bg-neutral-800 p-0.5 border border-neutral-700/80">
+            <button
+              onClick={() => setActiveTab("reservations")}
+              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === "reservations"
+                  ? "bg-gold text-neutral-950 shadow-md font-bold"
+                  : "text-neutral-400 hover:text-neutral-200"
+              }`}
+            >
+              <Calendar className="size-3.5 shrink-0" />
+              <span>Bookings</span>
+              <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] bg-neutral-900/40 font-mono">
+                {totalBookings}
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab("livechat");
+                if (selectedThreadId) markThreadAsRead(selectedThreadId);
+              }}
+              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === "livechat"
+                  ? "bg-gold text-neutral-950 shadow-md font-bold"
+                  : "text-neutral-400 hover:text-neutral-200"
+              }`}
+            >
+              <MessageSquare className="size-3.5 shrink-0" />
+              <span>Live Chat</span>
+              {totalUnreadChats > 0 && (
+                <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500 text-white font-bold animate-pulse font-mono">
+                  {totalUnreadChats}
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </header>
