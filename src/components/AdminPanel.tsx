@@ -875,16 +875,16 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
                 {/* 1. Ritual & Rate Card */}
                 <div className="grid grid-cols-[1fr_auto] items-center gap-4 rounded-xl border border-neutral-800 bg-neutral-800/40 p-3.5">
                   <div>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 block">
-                      Selected Ritual
+                    <span className="text-[10px] font-semibold text-neutral-400 block">
+                      Selected ritual
                     </span>
                     <p className="text-sm font-semibold text-neutral-100 mt-0.5">
                       {selectedRes.service}
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 block">
-                      Rate / Price
+                    <span className="text-[10px] font-semibold text-neutral-400 block">
+                      Rate / price
                     </span>
                     <p className="text-base font-bold text-gold mt-0.5">
                       {selectedRes.price}
@@ -895,8 +895,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
                 {/* 2. Schedule & Location Card */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="rounded-xl border border-neutral-800 bg-neutral-800/40 p-3.5">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 block">
-                      Appointment Time
+                    <span className="text-[10px] font-semibold text-neutral-400 block">
+                      Appointment time
                     </span>
                     <div className="flex items-center gap-2 text-xs font-semibold text-neutral-200 mt-1">
                       <Calendar className="size-3.5 text-gold shrink-0" />
@@ -908,8 +908,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
                   </div>
 
                   <div className="rounded-xl border border-neutral-800 bg-neutral-800/40 p-3.5">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 block">
-                      State &amp; City
+                    <span className="text-[10px] font-semibold text-neutral-400 block">
+                      State &amp; city
                     </span>
                     <div className="flex items-center gap-1.5 text-xs font-semibold text-neutral-200 mt-1">
                       <MapPin className="size-3.5 text-gold shrink-0" />
@@ -920,8 +920,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
 
                 {/* 3. Direct Contact & Action Bar */}
                 <div className="rounded-xl border border-neutral-800 bg-neutral-800/40 p-3.5">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 block">
-                    Guest Phone &amp; Instant Actions
+                  <span className="text-[10px] font-semibold text-neutral-400 block">
+                    Guest phone &amp; instant actions
                   </span>
                   <div className="flex items-center justify-between gap-3 mt-2 flex-wrap">
                     <div className="flex items-center gap-2">
@@ -960,8 +960,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
 
                 {/* 4. Special Notes & Preferences */}
                 <div className="rounded-xl border border-neutral-800 bg-neutral-800/40 p-3.5">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">
-                    Special Notes / Preferences
+                  <span className="text-[10px] font-semibold text-neutral-400 block mb-1">
+                    Special notes / preferences
                   </span>
                   <p className="text-xs text-neutral-300 bg-neutral-900/80 p-3 rounded-lg leading-relaxed border border-neutral-800">
                     {selectedRes.notes || "No special requests or allergies noted by guest."}
@@ -970,8 +970,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
 
                 {/* 5. Status Management Actions */}
                 <div className="rounded-xl border border-neutral-800 bg-neutral-800/40 p-3.5 space-y-2">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 block">
-                    Update Reservation Status
+                  <span className="text-[10px] font-semibold text-neutral-400 block">
+                    Update reservation status
                   </span>
                   <div className="grid grid-cols-3 gap-2 pt-0.5">
                     <button
@@ -1049,8 +1049,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
 
           <form onSubmit={handleAddReservation} className="space-y-4 pt-2 text-xs">
             <div>
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">
-                Guest Full Name
+              <label className="text-[11px] font-semibold text-neutral-400 block mb-1">
+                Guest full name
               </label>
               <input
                 type="text"
@@ -1063,8 +1063,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">
-                Phone Number
+              <label className="text-[11px] font-semibold text-neutral-400 block mb-1">
+                Phone number
               </label>
               <input
                 type="tel"
@@ -1078,8 +1078,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">
-                  Ritual Service
+                <label className="text-[11px] font-semibold text-neutral-400 block mb-1">
+                  Ritual service
                 </label>
                 <select
                   value={newService}
@@ -1104,8 +1104,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">
-                  Rate / Price
+                <label className="text-[11px] font-semibold text-neutral-400 block mb-1">
+                  Rate / price
                 </label>
                 <input
                   type="text"
@@ -1118,8 +1118,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">
-                  US State
+                <label className="text-[11px] font-semibold text-neutral-400 block mb-1">
+                  US state
                 </label>
                 <input
                   type="text"
@@ -1130,8 +1130,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
                 />
               </div>
               <div>
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">
-                  City / Zip
+                <label className="text-[11px] font-semibold text-neutral-400 block mb-1">
+                  City / zip
                 </label>
                 <input
                   type="text"
@@ -1145,7 +1145,7 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">
+                <label className="text-[11px] font-semibold text-neutral-400 block mb-1">
                   Date
                 </label>
                 <input
@@ -1157,8 +1157,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
                 />
               </div>
               <div>
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">
-                  Time Slot
+                <label className="text-[11px] font-semibold text-neutral-400 block mb-1">
+                  Time slot
                 </label>
                 <select
                   value={newTimeSlot}
@@ -1176,8 +1176,8 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 block mb-1">
-                Special Notes / Preferences
+              <label className="text-[11px] font-semibold text-neutral-400 block mb-1">
+                Special notes / preferences
               </label>
               <textarea
                 rows={2}

@@ -1092,8 +1092,8 @@ export default function App() {
           ) : (
             <form onSubmit={handleBookingSubmit} className="space-y-3.5 pt-1 text-xs">
               <div>
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1">
-                  Select Ritual
+                <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                  Select ritual
                 </label>
                 <select
                   value={selectedService}
@@ -1113,8 +1113,8 @@ export default function App() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1">
-                    US State
+                  <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                    US state
                   </label>
                   <select
                     value={selectedState}
@@ -1129,8 +1129,8 @@ export default function App() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1">
-                    City / Zip Code
+                  <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                    City / zip code
                   </label>
                   <input
                     type="text"
@@ -1145,8 +1145,8 @@ export default function App() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1">
-                    Preferred Date
+                  <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                    Preferred date
                   </label>
                   <input
                     type="date"
@@ -1157,8 +1157,8 @@ export default function App() {
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1">
-                    Time Slot
+                  <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                    Time slot
                   </label>
                   <select
                     value={bookingTime}
@@ -1176,8 +1176,8 @@ export default function App() {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1">
-                  Your Full Name
+                <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                  Your full name
                 </label>
                 <input
                   type="text"
@@ -1190,8 +1190,8 @@ export default function App() {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1">
-                  Phone Number
+                <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                  Phone number
                 </label>
                 <input
                   type="tel"
@@ -1204,8 +1204,8 @@ export default function App() {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1">
-                  Special Notes / Preferences (Optional)
+                <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                  Special notes / preferences (optional)
                 </label>
                 <textarea
                   rows={2}
