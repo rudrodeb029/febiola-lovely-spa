@@ -117,9 +117,6 @@ export function LiveConciergeWidget({ onOpenBooking }: LiveConciergeWidgetProps)
                   <h3 className="font-display text-lg font-medium tracking-wide">
                     Febiola Concierge
                   </h3>
-                  <p className="text-[10px] text-gold-soft opacity-85">
-                    Live Chat &amp; Nationwide Support
-                  </p>
                 </div>
               </div>
               <button
