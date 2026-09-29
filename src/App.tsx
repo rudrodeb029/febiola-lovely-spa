@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/dialog";
 import { LiveConciergeWidget } from "@/components/LiveConciergeWidget";
 import { AdminPanel } from "@/components/AdminPanel";
+import { DiscountOfferSection } from "@/components/DiscountOfferSection";
 
 // Spa Assets
 import heroImage from "@/assets/spa-man.jpg";
@@ -226,6 +227,8 @@ export default function App() {
   const [bookingDate, setBookingDate] = useState("");
   const [bookingTime, setBookingTime] = useState("11:00 AM");
   const [guestNotes, setGuestNotes] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState("");
+  const [inputPromo, setInputPromo] = useState("");
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -243,15 +246,38 @@ export default function App() {
     setBookingOpen(true);
   };
 
+  const handleClaimOffer = (promoCode: string) => {
+    setAppliedPromo(promoCode);
+    setInputPromo(promoCode);
+    setBookingSuccess(false);
+    setBookingOpen(true);
+    toast.success(`✨ Seasonal Offer Applied: 25% Off with code ${promoCode}!`);
+  };
+
+  const handleApplyPromoCode = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputPromo.trim()) return;
+    if (inputPromo.trim().toUpperCase() === "GLOW25" || inputPromo.trim().toUpperCase() === "FEBIOLA25") {
+      setAppliedPromo(inputPromo.trim().toUpperCase());
+      toast.success("Promo code GLOW25 applied! 25% discount unlocked.");
+    } else {
+      toast.error("Invalid promo code. Use GLOW25 for 25% off!");
+    }
+  };
+
+  // Price calculations with promo
+  const rawPriceStr = treatments.find((t) => t.name === selectedService)?.price || "$150";
+  const basePriceNum = parseInt(rawPriceStr.replace(/[^0-9]/g, ""), 10) || 150;
+  const isPromoApplied = appliedPromo.toUpperCase() === "GLOW25" || appliedPromo.toUpperCase() === "FEBIOLA25";
+  const finalPriceNum = isPromoApplied ? Math.round(basePriceNum * 0.75) : basePriceNum;
+  const computedPriceStr = `$${finalPriceNum}`;
+
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!guestName.trim() || !guestPhone.trim()) {
       toast.error("Please provide your name and phone number.");
       return;
     }
-
-    const price =
-      treatments.find((t) => t.name === selectedService)?.price || "$150";
 
     const newRes = {
       id: `RES-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -262,9 +288,11 @@ export default function App() {
       city: guestCity || selectedState,
       date: bookingDate || new Date().toISOString().split("T")[0],
       timeSlot: bookingTime,
-      notes: guestNotes,
+      notes: isPromoApplied
+        ? `${guestNotes ? guestNotes + " | " : ""}Promo: ${appliedPromo} (25% Discount Applied)`
+        : guestNotes,
       status: "Pending",
-      price,
+      price: computedPriceStr,
       createdAt: new Date().toISOString().replace("T", " ").substring(0, 16),
     };
 
@@ -424,6 +452,9 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      {/* Modern Discount Offer Section with Live Countdown Timer */}
+      <DiscountOfferSection onClaimOffer={handleClaimOffer} />
 
       {/* About Section */}
       <section id="about" className="bg-background px-6 py-24 sm:px-10 lg:py-32">
@@ -1192,9 +1223,73 @@ export default function App() {
                 />
               </div>
 
+              {/* Promo Code & Dynamic Price Banner */}
+              <div className="rounded-xl border border-gold/30 bg-gold/5 p-3 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-foreground flex items-center gap-1.5">
+                    <Sparkles className="size-3.5 text-gold" />
+                    <span>Estimated Rate</span>
+                  </span>
+                  <div className="flex items-baseline gap-2">
+                    {isPromoApplied && (
+                      <span className="text-xs text-muted-foreground line-through">
+                        {rawPriceStr}
+                      </span>
+                    )}
+                    <span className="text-sm font-bold text-primary">
+                      {computedPriceStr}
+                    </span>
+                    {isPromoApplied && (
+                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-500/15 px-1.5 py-0.2 rounded-full">
+                        25% OFF
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1 border-t border-gold/20">
+                  <input
+                    type="text"
+                    placeholder="Enter promo code (e.g. GLOW25)"
+                    value={inputPromo}
+                    onChange={(e) => setInputPromo(e.target.value.toUpperCase())}
+                    className="flex-1 rounded-lg border border-input bg-background px-3 py-1.5 text-xs text-foreground uppercase placeholder:normal-case shadow-sm focus:outline-none focus:ring-1 focus:ring-gold"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyPromoCode}
+                    className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors shadow-sm"
+                  >
+                    Apply
+                  </button>
+                </div>
+
+                {isPromoApplied ? (
+                  <p className="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+                    <CheckCircle2 className="size-3" />
+                    <span>Promo code {appliedPromo} applied: 25% discount activated!</span>
+                  </p>
+                ) : (
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                    <span>Use code <strong className="text-gold font-bold">GLOW25</strong> for 25% off</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setInputPromo("GLOW25");
+                        setAppliedPromo("GLOW25");
+                        toast.success("Promo code GLOW25 applied! 25% discount unlocked.");
+                      }}
+                      className="text-[10px] text-primary hover:underline font-semibold"
+                    >
+                      Apply GLOW25 →
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="pt-2">
                 <Button variant="spa" type="submit" className="w-full rounded-xl py-3 text-xs shadow-md">
-                  Confirm Reservation Request
+                  Confirm Reservation Request ({computedPriceStr})
                 </Button>
               </div>
             </form>
