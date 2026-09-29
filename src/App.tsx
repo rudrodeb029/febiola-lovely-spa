@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/dialog";
 import { LiveConciergeWidget } from "@/components/LiveConciergeWidget";
 import { AdminPanel } from "@/components/AdminPanel";
-import { DiscountOfferSection } from "@/components/DiscountOfferSection";
+import { TopDiscountBanner } from "@/components/TopDiscountBanner";
 
 // Spa Assets
 import heroImage from "@/assets/spa-man.jpg";
@@ -325,13 +325,8 @@ export default function App() {
 
   return (
     <main id="home" className="min-h-screen w-full overflow-x-hidden bg-background">
-      {/* Top Banner: Nationwide Coverage */}
-      <div className="bg-surface-deep/90 py-2 px-4 text-center text-[11px] font-medium tracking-wide text-primary-foreground/90 border-b border-white/10">
-        <span className="inline-flex items-center gap-1.5">
-          <Sparkles className="size-3.5 text-gold" />
-          <span>Premier Luxury Spa &amp; In-Home Wellness — <strong>Serving All 50 US States Nationwide</strong></span>
-        </span>
-      </div>
+      {/* Top Banner: Luxury Discount Offer & Live Countdown Timer */}
+      <TopDiscountBanner onClaimOffer={handleClaimOffer} />
 
       {/* Top Header */}
       <header className="sticky top-0 z-50 flex h-20 items-center justify-between border-b border-border/40 bg-card/95 px-6 backdrop-blur-md lg:px-14">
@@ -453,8 +448,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* Modern Discount Offer Section with Live Countdown Timer */}
-      <DiscountOfferSection onClaimOffer={handleClaimOffer} />
 
       {/* About Section */}
       <section id="about" className="bg-background px-6 py-24 sm:px-10 lg:py-32">
