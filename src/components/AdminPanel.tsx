@@ -906,7 +906,7 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
 
       {/* Reservation Details Modal with Mobile Optimization */}
       <Dialog open={!!selectedRes} onOpenChange={(open) => !open && setSelectedRes(null)}>
-        <DialogContent className="max-w-lg w-[calc(100%-1.5rem)] max-h-[88vh] overflow-y-auto bg-neutral-900 border-neutral-800 text-neutral-100 rounded-2xl p-4 sm:p-7 shadow-2xl overscroll-contain">
+        <DialogContent className="bg-neutral-900 border-neutral-800 text-neutral-100 p-4 sm:p-7">
           {selectedRes && (
             <div className="space-y-4">
               {/* Modal Top Header with Clean Spacing */}
@@ -1002,24 +1002,24 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
                   <span className="text-[10px] font-semibold text-neutral-400 block">
                     Guest phone &amp; instant actions
                   </span>
-                  <div className="flex items-center justify-between gap-2.5 mt-2 flex-wrap">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mt-2">
                     <div className="flex items-center gap-1.5">
                       <Phone className="size-3.5 text-gold" />
                       <span className="font-mono text-xs font-bold text-neutral-100">
                         {selectedRes.guestPhone}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       <a
                         href={`tel:${selectedRes.guestPhone}`}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-neutral-700/80 hover:bg-neutral-600 text-neutral-200 text-xs font-medium transition-colors"
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-neutral-700/80 hover:bg-neutral-600 text-neutral-200 text-xs font-medium transition-colors"
                         title="Call Phone"
                       >
                         <PhoneCall className="size-3 text-gold" /> Call
                       </a>
                       <a
                         href={`sms:${selectedRes.guestPhone}`}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-neutral-700/80 hover:bg-neutral-600 text-neutral-200 text-xs font-medium transition-colors"
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-neutral-700/80 hover:bg-neutral-600 text-neutral-200 text-xs font-medium transition-colors"
                         title="Send SMS"
                       >
                         <MessageSquare className="size-3" /> SMS
@@ -1028,7 +1028,7 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
                         href={`https://wa.me/${selectedRes.guestPhone.replace(/[^0-9]/g, "")}?text=Hello%20${encodeURIComponent(selectedRes.guestName)}%2C%20Febiola%20Spa%20concierge%20here%20regarding%20your%20${encodeURIComponent(selectedRes.service)}%20booking.`}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-950 text-emerald-300 hover:bg-emerald-900 border border-emerald-800 text-xs font-medium transition-colors"
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-950 text-emerald-300 hover:bg-emerald-900 border border-emerald-800 text-xs font-medium transition-colors"
                         title="WhatsApp Chat"
                       >
                         <MessageCircle className="size-3" /> WhatsApp
@@ -1121,7 +1121,7 @@ export function AdminPanel({ onBackToSite }: AdminPanelProps) {
 
       {/* Add Manual Reservation Modal with Responsive Fields */}
       <Dialog open={addModalOpen} onOpenChange={setAddModalOpen}>
-        <DialogContent className="max-w-lg w-[calc(100%-1.5rem)] max-h-[88vh] overflow-y-auto bg-neutral-900 border-neutral-800 text-neutral-100 rounded-2xl p-4 sm:p-7 shadow-2xl overscroll-contain">
+        <DialogContent className="bg-neutral-900 border-neutral-800 text-neutral-100 p-4 sm:p-7">
           <DialogHeader className="space-y-1 text-left pr-8">
             <DialogTitle className="font-display text-2xl sm:text-3xl font-semibold text-neutral-100">
               Create New Reservation

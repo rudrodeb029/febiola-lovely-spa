@@ -1064,7 +1064,7 @@ export default function App() {
 
       {/* Interactive Booking Dialog */}
       <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
-        <DialogContent className="max-w-lg w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto bg-card border-border sm:rounded-2xl p-5 sm:p-7 shadow-2xl overscroll-contain">
+        <DialogContent className="bg-card border-border p-5 sm:p-7">
           <DialogHeader className="space-y-1.5 text-left pr-8 pb-1">
             <DialogTitle className="font-display text-3xl font-semibold text-foreground">
               Reserve Your Ritual
